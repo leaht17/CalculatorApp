@@ -8,7 +8,7 @@ public class Calculator
             throw new ArgumentException("No input provided.");
 
         // Split input into numbers and operators
-        var tokens = Regex.Matches(input, "(\\d+\\.?\\d*)|[+\\-*/]");
+        var tokens = Regex.Matches(input, "(\\d+\\.?\\d*)|[+\\-*/^]");
         if (tokens.Count == 0)
             throw new ArgumentException("Invalid expression.");
 
@@ -24,6 +24,7 @@ public class Calculator
                 case "-": result -= next; break;
                 case "*": result *= next; break;
                 case "/": result /= next; break;
+                case "^": result = Math.Pow(result, next); break;
                 default:
                     throw new ArgumentException($"Unknown operator: {op}");
             }
