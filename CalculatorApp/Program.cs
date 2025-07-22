@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 Console.WriteLine("Console Calculator");
 Console.WriteLine("Type 'q' to quit. Type '/help' for directions.");
@@ -16,7 +16,7 @@ while (true)
     if (input.ToLower() == "/help")
     {
         Console.WriteLine("Calculator Help:");
-        Console.WriteLine("- Enter mathematical expressions using +, -, *, /");
+        Console.WriteLine("- Enter mathematical expressions using +, -, *, /, ^");
         Console.WriteLine("- Type 'q' to quit the calculator");
         Console.WriteLine("- Type '/help' to view these directions again");
         Console.WriteLine();
