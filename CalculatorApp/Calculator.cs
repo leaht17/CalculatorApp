@@ -8,7 +8,7 @@ public class Calculator
             throw new ArgumentException("No input provided.");
 
         // Split input into numbers, operators, and parentheses
-        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]|\s+");
+        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
             throw new ArgumentException("Invalid expression.");
 
