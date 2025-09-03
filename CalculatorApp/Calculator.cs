@@ -88,15 +88,28 @@ public class Calculator
             throw new ArgumentException("Insufficient operands for operator.");
         double b = output.Pop();
         double a = output.Pop();
-        double result = op switch
+        double result;
+
+        if (op == "^")
         {
-            "+" => a + b,
-            "-" => a - b,
-            "*" => a * b,
-            "/" => b == 0 ? throw new ArgumentException("Division by zero is not allowed.") : a / b,
-            "^" => Math.Pow(a, b),
-            _ => throw new ArgumentException($"Unknown operator: {op}")
-        };
+            double pow = Math.Pow(a, b);
+            if (double.IsNaN(pow))
+                throw new ArgumentException("Invalid exponentiation: negative base with fractional exponent.");
+            if (double.IsInfinity(pow))
+                throw new ArgumentException("Exponentiation result is too large.");
+            result = pow;
+        }
+        else
+        {
+            result = op switch
+            {
+                "+" => a + b,
+                "-" => a - b,
+                "*" => a * b,
+                "/" => b == 0 ? throw new ArgumentException("Division by zero is not allowed.") : a / b,
+                _ => throw new ArgumentException($"Unknown operator: {op}")
+            };
+        }
         output.Push(result);
     }
 }
