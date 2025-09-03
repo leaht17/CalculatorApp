@@ -7,29 +7,96 @@ public class Calculator
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
-        // Split input into numbers and operators
-        var tokens = Regex.Matches(input, "(\\d+\\.?\\d*)|[+\\-*/^]");
+        // Split input into numbers, operators, and parentheses
+        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]|\s+");
         if (tokens.Count == 0)
             throw new ArgumentException("Invalid expression.");
 
-        // Evaluate left-to-right
-        // TODO: consider order of operations
-        double result = double.Parse(tokens[0].Value);
-        for (int i = 1; i < tokens.Count; i += 2)
+        // Shunting Yard Algorithm for order of operations and parentheses
+        var output = new Stack<double>();
+        var operators = new Stack<string>();
+        int i = 0;
+        while (i < tokens.Count)
         {
-            string op = tokens[i].Value;
-            double next = double.Parse(tokens[i + 1].Value);
-            switch (op)
+            var token = tokens[i].Value.Trim();
+            if (string.IsNullOrEmpty(token))
             {
-                case "+": result += next; break;
-                case "-": result -= next; break;
-                case "*": result *= next; break;
-                case "/": result /= next; break;
-                case "^": result = Math.Pow(result, next); break;
-                default:
-                    throw new ArgumentException($"Unknown operator: {op}");
+                i++;
+                continue; // skip whitespace
             }
+            if (double.TryParse(token, out double num))
+            {
+                output.Push(num);
+            }
+            else if (token == "(")
+            {
+                operators.Push(token);
+            }
+            else if (token == ")")
+            {
+                while (operators.Count > 0 && operators.Peek() != "(")
+                {
+                    ApplyOperator(output, operators.Pop());
+                }
+                if (operators.Count == 0 || operators.Pop() != "(")
+                    throw new ArgumentException("Mismatched parentheses.");
+            }
+            else // operator
+            {
+                while (operators.Count > 0 && operators.Peek() != "(" &&
+                    (IsRightAssociative(token)
+                        ? Precedence(operators.Peek()) > Precedence(token)
+                        : Precedence(operators.Peek()) >= Precedence(token)))
+                {
+                    ApplyOperator(output, operators.Pop());
+                }
+                operators.Push(token);
+            }
+            i++;
         }
-        return result;
+        while (operators.Count > 0)
+        {
+            var op = operators.Pop();
+            if (op == "(" || op == ")")
+                throw new ArgumentException("Mismatched parentheses.");
+            ApplyOperator(output, op);
+        }
+        if (output.Count != 1)
+            throw new ArgumentException("Invalid expression.");
+        return output.Pop();
+    }
+
+    private int Precedence(string op)
+    {
+        return op switch
+        {
+            "^" => 3,
+            "*" or "/" => 2,
+            "+" or "-" => 1,
+            _ => 0
+        };
+    }
+
+    private bool IsRightAssociative(string op)
+    {
+        return op == "^";
+    }
+
+    private void ApplyOperator(Stack<double> output, string op)
+    {
+        if (output.Count < 2)
+            throw new ArgumentException("Insufficient operands for operator.");
+        double b = output.Pop();
+        double a = output.Pop();
+        double result = op switch
+        {
+            "+" => a + b,
+            "-" => a - b,
+            "*" => a * b,
+            "/" => b == 0 ? throw new ArgumentException("Division by zero is not allowed.") : a / b,
+            "^" => Math.Pow(a, b),
+            _ => throw new ArgumentException($"Unknown operator: {op}")
+        };
+        output.Push(result);
     }
 }
