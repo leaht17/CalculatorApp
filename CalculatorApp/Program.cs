@@ -1,7 +1,7 @@
 using System;
 
 Console.WriteLine("Console Calculator");
-Console.WriteLine("Type 'q' to quit. Type '/help' for directions.");
+Console.WriteLine("Type 'q' to quit. Type 'help' for directions.");
 
 var calculator = new Calculator();
 while (true)
@@ -13,12 +13,12 @@ while (true)
     input = input.Trim();
     if (input.ToLower() == "q")
         break;
-    if (input.ToLower() == "/help")
+    if (input.ToLower() == "help")
     {
         Console.WriteLine("Calculator Help:");
         Console.WriteLine("- Enter mathematical expressions using +, -, *, /, ^");
         Console.WriteLine("- Type 'q' to quit the calculator");
-        Console.WriteLine("- Type '/help' to view these directions again");
+        Console.WriteLine("- Type 'help' to view these directions again");
         Console.WriteLine();
         continue;
     }
