@@ -13,6 +13,7 @@ public class Calculator
             throw new ArgumentException("Invalid expression.");
 
         // Evaluate left-to-right
+        // TODO: consider order of operations
         double result = double.Parse(tokens[0].Value);
         for (int i = 1; i < tokens.Count; i += 2)
         {
