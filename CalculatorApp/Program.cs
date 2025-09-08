@@ -17,7 +17,7 @@ while (true)
     {
         Console.WriteLine("Calculator Help:");
         Console.WriteLine("- Enter mathematical expressions using +, -, *, /, ^");
-        Console.WriteLine("- Type 'q' to quit the calculator");
+        Console.WriteLine("- Type 'q' or 'quit' to quit the calculator");
         Console.WriteLine("- Type 'h' or 'help' to view these directions again");
         Console.WriteLine();
         continue;
