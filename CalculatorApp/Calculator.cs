@@ -19,11 +19,13 @@ public class Calculator
         while (i < tokens.Count)
         {
             var token = tokens[i].Value.Trim();
+
             if (string.IsNullOrEmpty(token))
             {
                 i++;
                 continue; // skip whitespace
             }
+
             if (double.TryParse(token, out double num))
             {
                 output.Push(num);
@@ -54,6 +56,7 @@ public class Calculator
             }
             i++;
         }
+
         while (operators.Count > 0)
         {
             var op = operators.Pop();
@@ -61,8 +64,10 @@ public class Calculator
                 throw new ArgumentException("Mismatched parentheses.");
             ApplyOperator(output, op);
         }
+
         if (output.Count != 1)
             throw new ArgumentException("Invalid expression.");
+
         return output.Pop();
     }
 
@@ -86,21 +91,24 @@ public class Calculator
     {
         if (output.Count < 2)
             throw new ArgumentException("Insufficient operands for operator.");
+
         double b = output.Pop();
         double a = output.Pop();
         double result;
 
+        // Catch invalid cases for exponentiation
         if (op == "^")
         {
             double pow = Math.Pow(a, b);
             if (double.IsNaN(pow))
-                throw new ArgumentException("Invalid exponentiation: negative base with fractional exponent.");
+                throw new ArgumentException("Invalid operation: negative base with fractional exponent is not allowed.");
             if (double.IsInfinity(pow))
-                throw new ArgumentException("Exponentiation result is too large.");
+                throw new ArgumentException("Invalid operation: exponentiation result is too large.");
             result = pow;
         }
         else
         {
+            // Handle other operators
             result = op switch
             {
                 "+" => a + b,
