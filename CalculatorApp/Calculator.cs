@@ -10,7 +10,7 @@ public class Calculator
         // Split input into numbers, operators, and parentheses
         var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
-            throw new ArgumentException("Invalid expression.");
+            throw new ArgumentException("Syntax error: invalid expression.");
 
         // Shunting Yard Algorithm for order of operations and parentheses
         var output = new Stack<double>();
@@ -76,7 +76,7 @@ public class Calculator
                     ApplyOperator(output, operators.Pop());
                 }
                 if (operators.Count == 0 || operators.Pop() != "(")
-                    throw new ArgumentException("Mismatched parentheses.");
+                    throw new ArgumentException("Syntax error: mismatched parentheses.");
             }
             else // operator
             {
@@ -97,12 +97,12 @@ public class Calculator
         {
             var op = operators.Pop();
             if (op == "(" || op == ")")
-                throw new ArgumentException("Mismatched parentheses.");
+                throw new ArgumentException("Syntax error: mismatched parentheses.");
             ApplyOperator(output, op);
         }
 
         if (output.Count != 1)
-            throw new ArgumentException("Invalid expression.");
+            throw new ArgumentException("Syntax error: invalid expression.");
 
         return output.Pop();
     }
@@ -131,7 +131,7 @@ public class Calculator
     private void ApplyOperator(Stack<double> output, string op)
     {
         if (output.Count < 2)
-            throw new ArgumentException("Insufficient operands for operator.");
+            throw new ArgumentException("Syntax error: insufficient operands for operator.");
 
         double b = output.Pop();
         double a = output.Pop();
@@ -155,8 +155,8 @@ public class Calculator
                 "+" => a + b,
                 "-" => a - b,
                 "*" => a * b,
-                "/" => b == 0 ? throw new ArgumentException("Division by zero is not allowed.") : a / b,
-                _ => throw new ArgumentException($"Unknown operator: {op}")
+                "/" => b == 0 ? throw new ArgumentException("Invalid operation: division by zero is not allowed.") : a / b,
+                _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
             };
         }
         output.Push(result);
