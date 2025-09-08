@@ -16,6 +16,7 @@ public class Calculator
         var output = new Stack<double>();
         var operators = new Stack<string>();
         int i = 0;
+        string prevToken = null;
         while (i < tokens.Count)
         {
             var token = tokens[i].Value.Trim();
@@ -24,6 +25,40 @@ public class Calculator
             {
                 i++;
                 continue; // skip whitespace
+            }
+
+            // Handle unary minus (negative numbers)
+            if (token == "-" && (prevToken == null || prevToken == "(" || IsOperator(prevToken)))
+            {
+                // Look ahead for the number
+                i++;
+                if (i < tokens.Count)
+                {
+                    var nextToken = tokens[i].Value.Trim();
+                    if (double.TryParse(nextToken, out double negNum))
+                    {
+                        output.Push(-negNum);
+                        prevToken = nextToken;
+                        i++;
+                        continue;
+                    }
+                    else if (nextToken == "(")
+                    {
+                        // Support for negative parenthesis: e.g., -(3+2)
+                        operators.Push("-");
+                        operators.Push("(");
+                        prevToken = "-";
+                        continue;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Syntax error: invalid use of unary minus.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Syntax error: invalid use of unary minus at end of expression.");
+                }
             }
 
             if (double.TryParse(token, out double num))
@@ -54,6 +89,7 @@ public class Calculator
                 }
                 operators.Push(token);
             }
+            prevToken = token;
             i++;
         }
 
@@ -85,6 +121,11 @@ public class Calculator
     private bool IsRightAssociative(string op)
     {
         return op == "^";
+    }
+
+    private bool IsOperator(string token)
+    {
+        return token == "+" || token == "-" || token == "*" || token == "/" || token == "^";
     }
 
     private void ApplyOperator(Stack<double> output, string op)
