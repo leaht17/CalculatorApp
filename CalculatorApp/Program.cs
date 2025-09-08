@@ -1,7 +1,7 @@
 using System;
 
 Console.WriteLine("Console Calculator");
-Console.WriteLine("Type 'q' to quit. Type 'h' for help.");
+Console.WriteLine("Type 'q' or 'quit' to quit. Type 'h' or 'help' for help.");
 
 var calculator = new Calculator();
 while (true)
