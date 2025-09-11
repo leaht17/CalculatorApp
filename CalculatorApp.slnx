@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path="README.md" />
+    <File Path="settings.VisualStudio.json" />
   </Folder>
   <Project Path="CalculatorApp/CalculatorApp.csproj" />
 </Solution>
