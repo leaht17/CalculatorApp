@@ -10,12 +10,13 @@ public class Calculator
         // Split input into numbers, operators, and parentheses
         var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
-            throw new ArgumentException("Invalid expression.");
+            throw new ArgumentException("Syntax error: invalid expression.");
 
         // Shunting Yard Algorithm for order of operations and parentheses
         var output = new Stack<double>();
         var operators = new Stack<string>();
         int i = 0;
+        string prevToken = null;
         while (i < tokens.Count)
         {
             var token = tokens[i].Value.Trim();
@@ -24,6 +25,41 @@ public class Calculator
             {
                 i++;
                 continue; // skip whitespace
+            }
+
+            // Handle unary minus (negative numbers)
+            if (token == "-" && (prevToken == null || prevToken == "(" || IsOperator(prevToken)))
+            {
+                // Look ahead for the number
+                i++;
+                if (i < tokens.Count)
+                {
+                    var nextToken = tokens[i].Value.Trim();
+                    if (double.TryParse(nextToken, out double negNum))
+                    {
+                        output.Push(-negNum);
+                        prevToken = nextToken;
+                        i++;
+                        continue;
+                    }
+                    else if (nextToken == "(")
+                    {
+                        // Support for negative parenthesis: e.g., -(3+2)
+                        operators.Push("-");
+                        operators.Push("(");
+                        prevToken = "(";
+                        i++;
+                        continue;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Syntax error: invalid use of unary minus.");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Syntax error: invalid use of unary minus at end of expression.");
+                }
             }
 
             if (double.TryParse(token, out double num))
@@ -41,7 +77,7 @@ public class Calculator
                     ApplyOperator(output, operators.Pop());
                 }
                 if (operators.Count == 0 || operators.Pop() != "(")
-                    throw new ArgumentException("Mismatched parentheses.");
+                    throw new ArgumentException("Syntax error: mismatched parentheses.");
             }
             else // operator
             {
@@ -54,6 +90,7 @@ public class Calculator
                 }
                 operators.Push(token);
             }
+            prevToken = token;
             i++;
         }
 
@@ -61,12 +98,12 @@ public class Calculator
         {
             var op = operators.Pop();
             if (op == "(" || op == ")")
-                throw new ArgumentException("Mismatched parentheses.");
+                throw new ArgumentException("Syntax error: mismatched parentheses.");
             ApplyOperator(output, op);
         }
 
         if (output.Count != 1)
-            throw new ArgumentException("Invalid expression.");
+            throw new ArgumentException("Syntax error: invalid expression.");
 
         return output.Pop();
     }
@@ -87,10 +124,15 @@ public class Calculator
         return op == "^";
     }
 
+    private bool IsOperator(string token)
+    {
+        return token == "+" || token == "-" || token == "*" || token == "/" || token == "^";
+    }
+
     private void ApplyOperator(Stack<double> output, string op)
     {
         if (output.Count < 2)
-            throw new ArgumentException("Insufficient operands for operator.");
+            throw new ArgumentException("Syntax error: insufficient operands for operator.");
 
         double b = output.Pop();
         double a = output.Pop();
@@ -114,8 +156,8 @@ public class Calculator
                 "+" => a + b,
                 "-" => a - b,
                 "*" => a * b,
-                "/" => b == 0 ? throw new ArgumentException("Division by zero is not allowed.") : a / b,
-                _ => throw new ArgumentException($"Unknown operator: {op}")
+                "/" => b == 0 ? throw new ArgumentException("Invalid operation: division by zero is not allowed.") : a / b,
+                _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
             };
         }
         output.Push(result);
