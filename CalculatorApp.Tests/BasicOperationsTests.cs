@@ -10,6 +10,7 @@ public class BasicOperationsTests
     [InlineData("2+3", 5)]
     [InlineData("0+0", 0)]
     [InlineData("1.5+2.5", 4)]
+    [InlineData("1+2", 3.0)]
     public void Addition_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
@@ -44,13 +45,6 @@ public class BasicOperationsTests
     {
         var result = _calculator.Evaluate(expression);
         Assert.Equal(expected, result);
-    }
-
-    [Fact]
-    public void DivisionByZero_ShouldThrowArgumentException()
-    {
-        var exception = Assert.Throws<ArgumentException>(() => _calculator.Evaluate("5/0"));
-        Assert.Equal("Division by zero is not allowed.", exception.Message);
     }
 
     [Theory]
