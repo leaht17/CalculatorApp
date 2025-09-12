@@ -22,24 +22,24 @@
     &quot;assignee&quot;: &quot;leaht17&quot;
   }
 }</component>
-  <component name="GitHubPullRequestState">{
-  &quot;prStates&quot;: [
+  <component name="GitHubPullRequestState"><![CDATA[{
+  "prStates": [
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOPMi_ts6mvvGV&quot;,
-        &quot;number&quot;: 3
+      "id": {
+        "id": "PR_kwDOPMi_ts6mvvGV",
+        "number": 3
       },
-      &quot;lastSeen&quot;: 1757606641719
+      "lastSeen": 1757606641719
     },
     {
-      &quot;id&quot;: {
-        &quot;id&quot;: &quot;PR_kwDOPMi_ts6ndtOO&quot;,
-        &quot;number&quot;: 4
+      "id": {
+        "id": "PR_kwDOPMi_ts6ndtOO",
+        "number": 4
       },
-      &quot;lastSeen&quot;: 1757614088193
+      "lastSeen": 1757616123392
     }
   ]
-}</component>
+}]]></component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/leaht17/CalculatorApp.git&quot;,
@@ -49,11 +49,8 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Program.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -112,12 +109,14 @@
       <workItem from="1757537737655" duration="184000" />
       <workItem from="1757538118634" duration="2527000" />
       <workItem from="1757606529331" duration="2182000" />
+      <workItem from="1757614735208" duration="4429000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
