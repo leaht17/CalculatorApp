@@ -47,7 +47,8 @@ public class Calculator
                         // Support for negative parenthesis: e.g., -(3+2)
                         operators.Push("-");
                         operators.Push("(");
-                        prevToken = "-";
+                        prevToken = "(";
+                        i++;
                         continue;
                     }
                     else
