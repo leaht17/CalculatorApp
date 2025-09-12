@@ -3,5 +3,6 @@
     <File Path="README.md" />
     <File Path="settings.VisualStudio.json" />
   </Folder>
+  <Project Path="CalculatorApp.Tests/CalculatorApp.Tests.csproj" />
   <Project Path="CalculatorApp/CalculatorApp.csproj" />
 </Solution>
