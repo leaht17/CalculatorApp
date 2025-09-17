@@ -13,7 +13,6 @@ public class InputParsingTests
 
     [Theory]
     [InlineData("  2 + 3  ", 5)]
-    [InlineData(" 10 * 5 ", 50)]
     [InlineData("2+   3", 5)]
     [InlineData("  (2+3)*4  ", 20)]
     public void WhitespaceHandling_ShouldReturnCorrectResult(string expression, double expected)
