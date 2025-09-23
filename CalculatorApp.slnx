@@ -4,4 +4,5 @@
     <File Path="settings.VisualStudio.json" />
   </Folder>
   <Project Path="CalculatorApp/CalculatorApp.csproj" />
+  <Project Path="Tests/CalculatorApp.Tests/CalculatorApp.Tests.csproj" />
 </Solution>
