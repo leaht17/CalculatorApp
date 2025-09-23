@@ -108,4 +108,20 @@ public class OrderOfOperationsTests
         var result = _calculator.Evaluate(expression);
         Assert.Equal(expected, result, 10);
     }
+
+    // negation not yet implemented
+    // [Theory]
+    // [InlineData("-2+3", 1)]              // negation has higher precedence than addition: (-2) + 3 = 1
+    // [InlineData("-2*3", -6)]             // negation has higher precedence than multiplication: (-2) * 3 = -6
+    // [InlineData("-2^2", -4)]             // negation has lower precedence than exponentiation: -(2^2) = -4
+    // [InlineData("(-2)^2", 4)]            // parentheses override precedence: (-2)^2 = 4
+    // [InlineData("-2^2+3", -1)]           // negation, then exponentiation, then addition: -(2^2) + 3 = -4 + 3 = -1
+    // [InlineData("3*-2", -6)]             // negation in the middle of expression: 3 * (-2) = -6
+    // [InlineData("-(2+3)", -5)]           // negation of parenthetical expression: -(2+3) = -5
+    // [InlineData("-2*-3", 6)]             // double negation: (-2) * (-3) = 6
+    // public void NegationOrderOfOperations_ShouldReturnCorrectResult(string expression, double expected)
+    // {
+    //     var result = _calculator.Evaluate(expression);
+    //     Assert.Equal(expected, result, 10);
+    // }
 }
