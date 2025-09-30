@@ -55,26 +55,25 @@ public class ParenthesesTests
         Assert.Equal(expected, result, 10);
     }
 
-    // [Theory]
-    // [InlineData("(-2)", -2)]
-    // [InlineData("(-5)", -5)]
-    // [InlineData("(-3.5)", -3.5)]
-    // public void NegativeNumbersInParentheses_ShouldReturnCorrectResult(string expression, double expected)
-    // {
-    //     var result = _calculator.Evaluate(expression);
-    //     Assert.Equal(expected, result, 10);
-    // }
+    [Theory]
+    [InlineData("(-2)", -2)]
+    [InlineData("(-5)", -5)]
+    [InlineData("(-3.5)", -3.5)]
+    public void NegativeNumbersInParentheses_ShouldReturnCorrectResult(string expression, double expected)
+    {
+        var result = _calculator.Evaluate(expression);
+        Assert.Equal(expected, result, 10);
+    }
 
-    // [Theory]
-    // [InlineData("-(5+2)", -7)]
-    // [InlineData("-(3*4)", -12)]
-    // [InlineData("-(10/2)", -5)]
-    // public void NegativeSignOutsideParentheses_ShouldReturnCorrectResult(string expression, double expected)
-    // {
-    //     // Not implemented yet - negative sign outside parentheses
-    //     var result = _calculator.Evaluate(expression);
-    //     Assert.Equal(expected, result, 10);
-    // }
+    [Theory]
+    [InlineData("-(5+2)", -7)]
+    [InlineData("-(3*4)", -12)]
+    [InlineData("-(10/2)", -5)]
+    public void NegativeSignOutsideParentheses_ShouldReturnCorrectResult(string expression, double expected)
+    {
+        var result = _calculator.Evaluate(expression);
+        Assert.Equal(expected, result, 10);
+    }
 
     [Theory]
     [InlineData("(2+3")]

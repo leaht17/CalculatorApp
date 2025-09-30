@@ -16,8 +16,9 @@ public class OrderOfOperationsTests
     [InlineData("10-2*3", 4)] // 10 - (2*3) = 10 - 6 = 4
     [InlineData("20/4+2", 7)] // (20/4) + 2 = 5 + 2 = 7
     [InlineData("3*4+5", 17)] // (3*4) + 5 = 12 + 5 = 17
-    // [InlineData("-2+3", 1)]  // negation has higher precedence than addition: (-2) + 3 = 1
-    // [InlineData("-2*3", -6)] // negation has higher precedence than multiplication: (-2) * 3 = -6
+    [InlineData("1+2*3-4", 3)] // 1 + (2*3) - 4 = 1 + 6 - 4 = 3
+    [InlineData("-2+3", 1)]  // negation has higher precedence than addition: (-2) + 3 = 1
+    [InlineData("-2*3", -6)] // negation has higher precedence than multiplication: (-2) * 3 = -6
     public void MultiplicationDivision_OverAdditionSubtraction_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
@@ -29,8 +30,8 @@ public class OrderOfOperationsTests
     [InlineData("3*2^2", 12)] // 3 * (2^2) = 3 * 4 = 12
     [InlineData("2^2+3^2", 13)] // (2^2) + (3^2) = 4 + 9 = 13
     [InlineData("10-2^3", 2)] // 10 - (2^3) = 10 - 8 = 2
-    // [InlineData("-2^2", -4)] // negation has lower precedence than exponentiation: -(2^2) = -4
-    // [InlineData("(-2)^2", 4)] // parentheses override precedence: (-2)^2 = 4
+    [InlineData("-2^2", -4)] // negation has lower precedence than exponentiation: -(2^2) = -4
+    [InlineData("(-2)^2", 4)] // parentheses override precedence: (-2)^2 = 4
     public void Exponentiation_OverMultiplicationDivision_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
@@ -42,7 +43,7 @@ public class OrderOfOperationsTests
     [InlineData("10/2+3*4", 17)] // (10/2) + (3*4) = 5 + 12 = 17
     [InlineData("2^2*3+1", 13)]  // (2^2) * 3 + 1 = 4 * 3 + 1 = 13
     [InlineData("20-3*2^2", 8)]  // 20 - (3 * (2^2)) = 20 - (3 * 4) = 20 - 12 = 8
-    // [InlineData("-2^2+3", -1)] // negation, then exponentiation, then addition: -(2^2) + 3 = -4 + 3 = -1
+    [InlineData("-2^2+3", -1)] // exponentiation, then negation, then addition: -(2^2) + 3 = -4 + 3 = -1
     public void ComplexExpressions_ShouldFollowCorrectOrder(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
@@ -65,8 +66,8 @@ public class OrderOfOperationsTests
     [InlineData("10/2-8/4", 3)]  // (10/2) - (8/4) = 5 - 2 = 3
     [InlineData("3^2+2^3", 17)]  // (3^2) + (2^3) = 9 + 8 = 17
     [InlineData("4*2^2/2", 8)]   // 4 * (2^2) / 2 = 4 * 4 / 2 = 16/2 = 8
-    // [InlineData("3*-2", -6)]  // negation in the middle of expression: 3 * (-2) = -6
-    // [InlineData("-2*-3", 6)]  // double negation: (-2) * (-3) = 6
+    [InlineData("3*-2", -6)]  // negation in the middle of expression: 3 * (-2) = -6
+    [InlineData("-2*-3", 6)]  // double negation: (-2) * (-3) = 6
     public void MultipleSamePrecedenceOperators_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
@@ -78,7 +79,7 @@ public class OrderOfOperationsTests
     [InlineData("2*(3+4)", 14)]     // Override precedence: 2 * (3+4) = 2 * 7 = 14
     [InlineData("(10-5)*2", 10)]    // Override precedence: (10-5) * 2 = 5 * 2 = 10
     [InlineData("20/(4+1)", 4)]     // Override precedence: 20 / (4+1) = 20/5 = 4
-    // [InlineData("-(2+3)", -5)]   // negation of parenthetical expression: -(2+3) = -5
+    [InlineData("-(2+3)", -5)]   // negation of parenthetical expression: -(2+3) = -5
     public void ParenthesesOverridePrecedence_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
