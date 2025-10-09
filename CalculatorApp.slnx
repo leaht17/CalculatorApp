@@ -1,7 +1,9 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path=".mcp.json" />
     <File Path="README.md" />
     <File Path="settings.VisualStudio.json" />
   </Folder>
   <Project Path="CalculatorApp/CalculatorApp.csproj" />
+  <Project Path="Tests/CalculatorApp.Tests/CalculatorApp.Tests.csproj" />
 </Solution>
