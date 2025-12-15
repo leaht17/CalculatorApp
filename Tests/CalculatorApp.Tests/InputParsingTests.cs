@@ -18,7 +18,7 @@ public class InputParsingTests
     public void WhitespaceHandling_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
-        Assert.Equal(expected, result, 10);
+        Assert.Equal(expected, result, precision: 15);
     }
 
     [Theory]
@@ -29,7 +29,7 @@ public class InputParsingTests
     public void IntegerParsing_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
-        Assert.Equal(expected, result, 10);
+        Assert.Equal(expected, result, precision: 15);
     }
 
     [Theory]
@@ -41,7 +41,7 @@ public class InputParsingTests
     public void DecimalParsing_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
-        Assert.Equal(expected, result, 10);
+        Assert.Equal(expected, result, precision: 15);
     }
 
     [Theory]
@@ -51,7 +51,7 @@ public class InputParsingTests
     public void DecimalWithoutLeadingZero_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
-        Assert.Equal(expected, result, 10);
+        Assert.Equal(expected, result, precision: 15);
     }
 
     [Theory]
@@ -92,7 +92,7 @@ public class InputParsingTests
     public void DoubleNegative_ShouldReturnCorrectResult(string expression, double expected)
     {
         var result = _calculator.Evaluate(expression);
-        Assert.Equal(expected, result, 10);
+        Assert.Equal(expected, result, precision: 15);
     }
 
     [Theory]
@@ -143,5 +143,21 @@ public class InputParsingTests
     public void InvalidUnaryMinus_ShouldThrowArgumentException(string expression)
     {
         Assert.Throws<ArgumentException>(() => _calculator.Evaluate(expression));
+    }
+
+    [Theory]
+    [InlineData("pi", Math.PI)]
+    [InlineData("e", Math.E)]
+    [InlineData("2*pi", 2 * Math.PI)]
+    [InlineData("pi+e", Math.PI + Math.E)]
+    [InlineData("-pi", -Math.PI)]
+    [InlineData("-e", -Math.E)]
+    [InlineData("pi^2", Math.PI * Math.PI)]
+    [InlineData("e^2", Math.E * Math.E)]
+    [InlineData("(pi+e)*2", (Math.PI + Math.E) * 2)]
+    public void ConstantParsing_ShouldReturnCorrectResult(string expression, double expected)
+    {
+        var result = _calculator.Evaluate(expression);
+        Assert.Equal(expected, result, precision: 15);
     }
 }

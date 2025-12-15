@@ -1,7 +1,15 @@
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 public class Calculator
 {
+    // Add constants dictionary
+    private static readonly Dictionary<string, double> Constants = new()
+    {
+        { "pi", Math.PI },
+        { "e", Math.E }
+    };
+
     private int Precedence(string op)
     {
         return op switch
@@ -19,7 +27,14 @@ public class Calculator
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
-        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]\s*");
+        // Check for invalid characters (only allow digits, operators, parentheses, whitespace, dot, and constants)
+        var constantPattern = string.Join("|", Constants.Keys);
+        var validPattern = $@"^([\d+\-*/^().\s]|{constantPattern})+$";
+        if (!Regex.IsMatch(input, validPattern, RegexOptions.IgnoreCase))
+            throw new ArgumentException($"Invalid characters in input: {input}");
+
+        // Split input into numbers, operators, parentheses, and constants
+        var tokens = Regex.Matches(input, $@"({constantPattern}|\d+(\.\d*)?|\.\d+)|[+\-*/^()]", RegexOptions.IgnoreCase);
         if (tokens.Count == 0)
             throw new ArgumentException("Syntax error: invalid expression.");
 
@@ -39,6 +54,7 @@ public class Calculator
             // Handle unary minus as operator
             if (token == "-" && (prevToken == null || prevToken == "(" || IsOperator(prevToken)))
             {
+                // Instead of immediately negating the next number, push unary minus as operator
                 operators.Push("u-");
                 prevToken = "u-";
                 i++;
@@ -48,6 +64,10 @@ public class Calculator
             if (double.TryParse(token, out double num))
             {
                 output.Push(num);
+            }
+            else if (Constants.TryGetValue(token, out double constValue))
+            {
+                output.Push(constValue);
             }
             else if (token == "(")
             {
@@ -62,7 +82,7 @@ public class Calculator
                 if (operators.Count == 0 || operators.Pop() != "(")
                     throw new ArgumentException("Syntax error: mismatched parentheses.");
             }
-            else // operator
+            else if (IsOperator(token))
             {
                 while (operators.Count > 0 && operators.Peek() != "(" &&
                     (IsRightAssociative(token)
@@ -72,6 +92,11 @@ public class Calculator
                     ApplyOperator(output, operators.Pop());
                 }
                 operators.Push(token);
+            }
+            else
+            {
+                // Unknown token: throw exception
+                throw new ArgumentException($"Invalid token: {token}");
             }
             prevToken = token;
             i++;

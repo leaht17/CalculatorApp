@@ -7,7 +7,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c04529ce-481f-48fc-8437-4eed2f9ee8fd" name="Changes" comment="" />
+    <list default="true" id="c04529ce-481f-48fc-8437-4eed2f9ee8fd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.CalculatorApp/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.CalculatorApp/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CalculatorApp/Calculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/CalculatorApp/Calculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/CalculatorApp.Tests/InputParsingTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/CalculatorApp.Tests/InputParsingTests.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,17 +30,17 @@
   "prStates": [
     {
       "id": {
-        "id": "PR_kwDOPMi_ts6mvvGV",
-        "number": 3
-      },
-      "lastSeen": 1757606641719
-    },
-    {
-      "id": {
         "id": "PR_kwDOPMi_ts6ndtOO",
         "number": 4
       },
       "lastSeen": 1757616123392
+    },
+    {
+      "id": {
+        "id": "PR_kwDOPMi_ts6pIHUN",
+        "number": 12
+      },
+      "lastSeen": 1759273909781
     }
   ]
 }]]></component>
@@ -49,6 +53,12 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/CalculatorApp/Calculator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/BasicOperationsTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/ExponentiationTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/GlobalUsings.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/InputParsingTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/OrderOfOperationsTests.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/leahtran/source/repos/CalculatorApp/Tests/CalculatorApp.Tests/ParenthesesTests.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -64,7 +74,7 @@
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#4 on feature/support-multiple-operations&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/constants&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -110,6 +120,8 @@
       <workItem from="1757538118634" duration="2527000" />
       <workItem from="1757606529331" duration="2182000" />
       <workItem from="1757614735208" duration="4429000" />
+      <workItem from="1759272428433" duration="1039000" />
+      <workItem from="1759273624454" duration="1570000" />
     </task>
     <servers />
   </component>
