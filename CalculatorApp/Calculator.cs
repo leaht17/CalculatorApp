@@ -7,6 +7,10 @@ public class Calculator
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
+        // Replace constant names before tokenizing
+        input = Regex.Replace(input, @"\bpi\b", Math.PI.ToString("R"), RegexOptions.IgnoreCase);
+        input = Regex.Replace(input, @"\be\b", Math.E.ToString("R"), RegexOptions.IgnoreCase);
+
         // Split input into numbers, operators, and parentheses
         var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
