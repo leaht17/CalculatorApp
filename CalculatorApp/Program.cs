@@ -17,6 +17,8 @@ while (true)
     {
         Console.WriteLine("Calculator Help:");
         Console.WriteLine("- Enter mathematical expressions using +, -, *, /, ^");
+        Console.WriteLine("- Use 'pi' for π (3.14159...)");
+        Console.WriteLine("- Use 'e' for Euler's number (2.71828...)");
         Console.WriteLine("- Type 'q' to quit the calculator");
         Console.WriteLine("- Type 'help' to view these directions again");
         Console.WriteLine();
