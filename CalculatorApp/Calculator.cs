@@ -159,13 +159,26 @@ public class Calculator
             "*" => a * b,
             "/" when b == 0 => throw new ArgumentException("Invalid operation: division by zero is not allowed."),
             "/" => a / b,
-            "%" when b == 0 => throw new ArgumentException("Invalid operation: modulo by zero is not allowed."),
-            "%" => a % b,
+            "%" => ValidateAndCalculateModulo(a, b),
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
 
         output.Push(result);
+    }
+
+    private static double ValidateAndCalculateModulo(double a, double b)
+    {
+        if (b == 0)
+            throw new ArgumentException("Invalid operation: modulo by zero is not allowed.");
+
+        // Note: This calculator uses the C# remainder (%) operator.
+        // For negative operands, the result takes the sign of the dividend:
+        //   -5 % 2 = -1 (not 1)
+        //    5 % -2 = 1 (not -1)
+        // Fractional operands are supported: 5.5 % 2 = 1.5
+
+        return a % b;
     }
 
     private static double ValidateAndCalculatePower(double a, double b)

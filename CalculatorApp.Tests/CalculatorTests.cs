@@ -47,6 +47,39 @@ public class CalculatorTests
     public void Modulo_ByZero_Throws() =>
         Assert.Throws<ArgumentException>(() => _calc.Evaluate("5%0"));
 
+    // Modulo edge cases: negative operands
+    [Theory]
+    [InlineData("-5%2", -1)]  // Result takes sign of dividend
+    [InlineData("5%-2", 1)]   // Result takes sign of dividend
+    [InlineData("-5%-2", -1)] // Both negative
+    public void Modulo_NegativeOperands(string input, double expected) =>
+        Assert.Equal(expected, _calc.Evaluate(input));
+
+    // Modulo edge cases: fractional operands
+    [Theory]
+    [InlineData("5.5%2", 1.5)]
+    [InlineData("7.8%2.5", 0.3)]
+    [InlineData("10.9%3.2", 1.3)]
+    public void Modulo_FractionalOperands(string input, double expected) =>
+        Assert.Equal(expected, _calc.Evaluate(input), precision: 5);
+
+    // Modulo precedence (same as * and /)
+    [Theory]
+    [InlineData("8%3*2", 4)]    // (8%3)*2 = 2*2 = 4
+    [InlineData("8*3%5", 4)]    // (8*3)%5 = 24%5 = 4
+    [InlineData("10%3+2", 3)]   // (10%3)+2 = 1+2 = 3
+    [InlineData("10+3%2", 11)]  // 10+(3%2) = 10+1 = 11
+    public void Modulo_Precedence(string input, double expected) =>
+        Assert.Equal(expected, _calc.Evaluate(input));
+
+    // Modulo with parentheses
+    [Theory]
+    [InlineData("(8%3)*2", 4)]   // 2*2 = 4
+    [InlineData("8%(3*2)", 2)]   // 8%6 = 2
+    [InlineData("(10+2)%5", 2)]  // 12%5 = 2
+    public void Modulo_WithParentheses(string input, double expected) =>
+        Assert.Equal(expected, _calc.Evaluate(input));
+
     // Exponentiation
     [Theory]
     [InlineData("2^10", 1024)]
