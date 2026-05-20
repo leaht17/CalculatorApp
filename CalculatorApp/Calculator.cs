@@ -136,30 +136,41 @@ public class Calculator
 
         double b = output.Pop();
         double a = output.Pop();
-        double result;
 
-        // Catch invalid cases for exponentiation
-        if (op == "^")
+        double result = op switch
         {
-            double pow = Math.Pow(a, b);
-            if (double.IsNaN(pow))
-                throw new ArgumentException("Invalid operation: negative base with fractional exponent is not allowed.");
-            if (double.IsInfinity(pow))
-                throw new ArgumentException("Invalid operation: exponentiation result is too large.");
-            result = pow;
-        }
-        else
-        {
-            // Handle other operators
-            result = op switch
-            {
-                "+" => a + b,
-                "-" => a - b,
-                "*" => a * b,
-                "/" => b == 0 ? throw new ArgumentException("Invalid operation: division by zero is not allowed.") : a / b,
-                _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
-            };
-        }
+            "+" => a + b,
+            "-" => a - b,
+            "*" => a * b,
+            "/" when b == 0 => throw new ArgumentException("Invalid operation: division by zero is not allowed."),
+            "/" => a / b,
+            "^" => ValidateAndCalculatePower(a, b),
+            _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
+        };
+        
         output.Push(result);
+    }
+
+    private static double ValidateAndCalculatePower(double a, double b)
+    {
+        if (!double.IsFinite(a))
+            throw new ArgumentException("Invalid operation: base must be a finite number.");
+        if (!double.IsFinite(b))
+            throw new ArgumentException("Invalid operation: exponent must be a finite number.");
+
+        const double epsilon = 1e-9;
+        double roundedB = Math.Round(b);
+        bool isIntegerExponent = Math.Abs(b - roundedB) < epsilon;
+
+        if (a < 0 && !isIntegerExponent)
+            throw new ArgumentException("Invalid operation: negative base with fractional exponent is not allowed.");
+
+        double exponent = isIntegerExponent ? roundedB : b;
+        double pow = Math.Pow(a, exponent);
+        if (double.IsNaN(pow))
+            throw new ArgumentException("Invalid operation: exponentiation result is not a number (NaN).");
+        if (double.IsPositiveInfinity(pow) || double.IsNegativeInfinity(pow))
+            throw new ArgumentException("Invalid operation: exponentiation result is out of range.");
+        return pow;
     }
 }
