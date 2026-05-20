@@ -12,7 +12,7 @@ public class Calculator
         input = Regex.Replace(input, @"\be\b", Math.E.ToString("R"), RegexOptions.IgnoreCase);
 
         // Split input into numbers, operators, and parentheses
-        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
+        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/%^()]");
         if (tokens.Count == 0)
             throw new ArgumentException("Syntax error: invalid expression.");
 
@@ -118,7 +118,7 @@ public class Calculator
         return op switch
         {
             "^" => 3,
-            "*" or "/" => 2,
+            "*" or "/" or "%" => 2,
             "+" or "-" => 1,
             _ => 0
         };
@@ -131,7 +131,7 @@ public class Calculator
 
     private bool IsOperator(string token)
     {
-        return token == "+" || token == "-" || token == "*" || token == "/" || token == "^";
+        return token == "+" || token == "-" || token == "*" || token == "/" || token == "%" || token == "^";
     }
 
     private void ApplyOperator(Stack<double> output, string op)
@@ -159,6 +159,8 @@ public class Calculator
             "*" => a * b,
             "/" when b == 0 => throw new ArgumentException("Invalid operation: division by zero is not allowed."),
             "/" => a / b,
+            "%" when b == 0 => throw new ArgumentException("Invalid operation: modulo by zero is not allowed."),
+            "%" => a % b,
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
