@@ -49,7 +49,8 @@ public class Calculator
                     else if (nextToken == "(")
                     {
                         // Support for negative parenthesis: e.g., -(3+2)
-                        operators.Push("-");
+                        // Push a special unary negation operator
+                        operators.Push("~");
                         operators.Push("(");
                         prevToken = "(";
                         i++;
@@ -135,6 +136,16 @@ public class Calculator
 
     private void ApplyOperator(Stack<double> output, string op)
     {
+        // Handle unary negation operator
+        if (op == "~")
+        {
+            if (output.Count < 1)
+                throw new ArgumentException("Syntax error: insufficient operands for unary operator.");
+            double value = output.Pop();
+            output.Push(-value);
+            return;
+        }
+
         if (output.Count < 2)
             throw new ArgumentException("Syntax error: insufficient operands for operator.");
 
@@ -151,7 +162,7 @@ public class Calculator
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
-        
+
         output.Push(result);
     }
 

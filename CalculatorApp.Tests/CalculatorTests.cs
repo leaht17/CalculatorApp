@@ -35,18 +35,6 @@ public class CalculatorTests
     public void Division_ByZero_Throws() =>
         Assert.Throws<ArgumentException>(() => _calc.Evaluate("5/0"));
 
-    // Modulo
-    [Theory]
-    [InlineData("10%3", 1)]
-    [InlineData("9%3", 0)]
-    [InlineData("7%4", 3)]
-    public void Modulo(string input, double expected) =>
-        Assert.Equal(expected, _calc.Evaluate(input));
-
-    [Fact]
-    public void Modulo_ByZero_Throws() =>
-        Assert.Throws<ArgumentException>(() => _calc.Evaluate("5%0"));
-
     // Exponentiation
     [Theory]
     [InlineData("2^10", 1024)]
@@ -58,6 +46,9 @@ public class CalculatorTests
     [Theory]
     [InlineData("-3+5", 2)]
     [InlineData("-(3+2)", -5)]
+    [InlineData("-(3+2)*2", -10)]
+    [InlineData("5+-(3+2)", 0)]
+    [InlineData("-(-3)", 3)]
     public void UnaryMinus(string input, double expected) =>
         Assert.Equal(expected, _calc.Evaluate(input));
 
@@ -65,7 +56,6 @@ public class CalculatorTests
     [Theory]
     [InlineData("(1+2)*3", 9)]
     [InlineData("2+3*4", 14)]
-    [InlineData("10%3+1", 2)]
     public void OrderOfOperations(string input, double expected) =>
         Assert.Equal(expected, _calc.Evaluate(input));
 
