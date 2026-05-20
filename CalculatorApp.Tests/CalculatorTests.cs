@@ -58,6 +58,9 @@ public class CalculatorTests
     [Theory]
     [InlineData("-3+5", 2)]
     [InlineData("-(3+2)", -5)]
+    [InlineData("-(3+2)*2", -10)]
+    [InlineData("5+-(3+2)", 0)]
+    [InlineData("-(-3)", 3)]
     public void UnaryMinus(string input, double expected) =>
         Assert.Equal(expected, _calc.Evaluate(input));
 
