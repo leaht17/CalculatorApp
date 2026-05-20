@@ -153,8 +153,18 @@ public class Calculator
 
     private static double ValidateAndCalculatePower(double a, double b)
     {
-        if (a < 0 && b % 1 != 0)
+        if (!double.IsFinite(a))
+            throw new ArgumentException("Invalid operation: base must be a finite number.");
+        if (!double.IsFinite(b))
+            throw new ArgumentException("Invalid operation: exponent must be a finite number.");
+
+        const double epsilon = 1e-9;
+        double roundedB = Math.Round(b);
+        bool isIntegerExponent = Math.Abs(b - roundedB) < epsilon;
+
+        if (a < 0 && !isIntegerExponent)
             throw new ArgumentException("Invalid operation: negative base with fractional exponent is not allowed.");
+
         double pow = Math.Pow(a, b);
         if (double.IsNaN(pow))
             throw new ArgumentException("Invalid operation: exponentiation result is not a number (NaN).");
