@@ -165,7 +165,8 @@ public class Calculator
         if (a < 0 && !isIntegerExponent)
             throw new ArgumentException("Invalid operation: negative base with fractional exponent is not allowed.");
 
-        double pow = Math.Pow(a, b);
+        double exponent = isIntegerExponent ? roundedB : b;
+        double pow = Math.Pow(a, exponent);
         if (double.IsNaN(pow))
             throw new ArgumentException("Invalid operation: exponentiation result is not a number (NaN).");
         if (double.IsPositiveInfinity(pow) || double.IsNegativeInfinity(pow))
