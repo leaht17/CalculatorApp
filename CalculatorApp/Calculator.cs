@@ -187,8 +187,13 @@ public class Calculator
         {
             try
             {
-                int intResult = intOperation(left, right);
-                return returnFloatingResultOnIntOperands ? floatingOperation(a, b) : intResult;
+                if (returnFloatingResultOnIntOperands)
+                {
+                    intOperation(left, right);
+                    return floatingOperation(a, b);
+                }
+
+                return intOperation(left, right);
             }
             catch (OverflowException ex)
             {
@@ -201,7 +206,13 @@ public class Calculator
 
     private static double DivideWithOverflowValidation(double a, double b)
     {
-        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left / right), (left, right) => left / right, "division", returnFloatingResultOnIntOperands: true);
+        return ExecuteWithOverflowValidation(
+            a,
+            b,
+            (left, right) => left == int.MinValue && right == -1 ? throw new OverflowException() : 0,
+            (left, right) => left / right,
+            "division",
+            returnFloatingResultOnIntOperands: true);
     }
 
     private static bool TryGetIntOperands(double a, double b, out int left, out int right)
