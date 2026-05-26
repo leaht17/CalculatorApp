@@ -7,10 +7,16 @@ public class Calculator
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
+        string normalizedInput = Regex.Replace(input, @"\s+", string.Empty);
+
         // Split input into numbers, operators, and parentheses
-        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
+        var tokens = Regex.Matches(normalizedInput, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
             throw new ArgumentException("Syntax error: invalid expression.");
+
+        string matchedTokens = string.Concat(tokens.Select(t => t.Value));
+        if (!string.Equals(matchedTokens, normalizedInput, StringComparison.Ordinal))
+            throw new ArgumentException("Invalid input: expression contains non-numeric or unsupported tokens.");
 
         // Shunting Yard Algorithm for order of operations and parentheses
         var output = new Stack<double>();
@@ -139,16 +145,30 @@ public class Calculator
 
         double result = op switch
         {
-            "+" => a + b,
-            "-" => a - b,
-            "*" => a * b,
-            "/" when b == 0 => throw new ArgumentException("Invalid operation: division by zero is not allowed."),
-            "/" => a / b,
+            "+" => ValidateIntegerOverflow(a, b, a + b, "addition"),
+            "-" => ValidateIntegerOverflow(a, b, a - b, "subtraction"),
+            "*" => ValidateIntegerOverflow(a, b, a * b, "multiplication"),
+            "/" when b == 0 => throw new DivideByZeroException("Invalid operation: division by zero is not allowed."),
+            "/" => ValidateIntegerOverflow(a, b, a / b, "division"),
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
         
         output.Push(result);
+    }
+
+    private static double ValidateIntegerOverflow(double a, double b, double result, string operation)
+    {
+        if (IsIntegerValue(a) && IsIntegerValue(b) && (result > int.MaxValue || result < int.MinValue))
+            throw new OverflowException($"Integer overflow: {operation} result exceeds Int32 range.");
+
+        return result;
+    }
+
+    private static bool IsIntegerValue(double value)
+    {
+        const double epsilon = 1e-9;
+        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < epsilon;
     }
 
     private static double ValidateAndCalculatePower(double a, double b)
