@@ -2,6 +2,8 @@ using System.Text.RegularExpressions;
 
 public class Calculator
 {
+    private const double IntegerTolerance = 1e-9;
+
     public double Evaluate(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
@@ -145,11 +147,11 @@ public class Calculator
 
         double result = op switch
         {
-            "+" => ValidateIntegerOverflow(a, b, a + b, "addition"),
-            "-" => ValidateIntegerOverflow(a, b, a - b, "subtraction"),
-            "*" => ValidateIntegerOverflow(a, b, a * b, "multiplication"),
+            "+" => AddWithOverflowValidation(a, b),
+            "-" => SubtractWithOverflowValidation(a, b),
+            "*" => MultiplyWithOverflowValidation(a, b),
             "/" when b == 0 => throw new DivideByZeroException("Invalid operation: division by zero is not allowed."),
-            "/" => ValidateIntegerOverflow(a, b, a / b, "division"),
+            "/" => DivideWithOverflowValidation(a, b),
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
@@ -157,18 +159,83 @@ public class Calculator
         output.Push(result);
     }
 
-    private static double ValidateIntegerOverflow(double a, double b, double result, string operation)
+    private static double AddWithOverflowValidation(double a, double b)
     {
-        if (IsIntegerValue(a) && IsIntegerValue(b) && (result > int.MaxValue || result < int.MinValue))
-            throw new OverflowException($"Integer overflow: {operation} result exceeds Int32 range.");
+        if (TryGetIntOperands(a, b, out int left, out int right))
+        {
+            try
+            {
+                return checked(left + right);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("Integer overflow: addition result exceeds Int32 range.");
+            }
+        }
 
-        return result;
+        return a + b;
+    }
+
+    private static double SubtractWithOverflowValidation(double a, double b)
+    {
+        if (TryGetIntOperands(a, b, out int left, out int right))
+        {
+            try
+            {
+                return checked(left - right);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("Integer overflow: subtraction result exceeds Int32 range.");
+            }
+        }
+
+        return a - b;
+    }
+
+    private static double MultiplyWithOverflowValidation(double a, double b)
+    {
+        if (TryGetIntOperands(a, b, out int left, out int right))
+        {
+            try
+            {
+                return checked(left * right);
+            }
+            catch (OverflowException)
+            {
+                throw new OverflowException("Integer overflow: multiplication result exceeds Int32 range.");
+            }
+        }
+
+        return a * b;
+    }
+
+    private static double DivideWithOverflowValidation(double a, double b)
+    {
+        if (TryGetIntOperands(a, b, out int left, out int right) && left == int.MinValue && right == -1)
+            throw new OverflowException("Integer overflow: division result exceeds Int32 range.");
+
+        return a / b;
+    }
+
+    private static bool TryGetIntOperands(double a, double b, out int left, out int right)
+    {
+        left = 0;
+        right = 0;
+
+        if (!IsIntegerValue(a) || !IsIntegerValue(b))
+            return false;
+        if (a < int.MinValue || a > int.MaxValue || b < int.MinValue || b > int.MaxValue)
+            return false;
+
+        left = (int)a;
+        right = (int)b;
+        return true;
     }
 
     private static bool IsIntegerValue(double value)
     {
-        const double epsilon = 1e-9;
-        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < epsilon;
+        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < IntegerTolerance;
     }
 
     private static double ValidateAndCalculatePower(double a, double b)
