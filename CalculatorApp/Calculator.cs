@@ -162,53 +162,39 @@ public class Calculator
 
     private static double AddWithOverflowValidation(double a, double b)
     {
-        if (TryGetIntOperands(a, b, out int left, out int right))
-        {
-            try
-            {
-                return checked(left + right);
-            }
-            catch (OverflowException)
-            {
-                throw new OverflowException("Integer overflow: addition result exceeds Int32 range.");
-            }
-        }
-
-        return a + b;
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left + right), (left, right) => left + right, "addition");
     }
 
     private static double SubtractWithOverflowValidation(double a, double b)
     {
-        if (TryGetIntOperands(a, b, out int left, out int right))
-        {
-            try
-            {
-                return checked(left - right);
-            }
-            catch (OverflowException)
-            {
-                throw new OverflowException("Integer overflow: subtraction result exceeds Int32 range.");
-            }
-        }
-
-        return a - b;
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left - right), (left, right) => left - right, "subtraction");
     }
 
     private static double MultiplyWithOverflowValidation(double a, double b)
+    {
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left * right), (left, right) => left * right, "multiplication");
+    }
+
+    private static double ExecuteWithOverflowValidation(
+        double a,
+        double b,
+        Func<int, int, int> intOperation,
+        Func<double, double, double> floatingOperation,
+        string operationName)
     {
         if (TryGetIntOperands(a, b, out int left, out int right))
         {
             try
             {
-                return checked(left * right);
+                return intOperation(left, right);
             }
             catch (OverflowException)
             {
-                throw new OverflowException("Integer overflow: multiplication result exceeds Int32 range.");
+                throw new OverflowException($"Integer overflow: {operationName} result exceeds Int32 range.");
             }
         }
 
-        return a * b;
+        return floatingOperation(a, b);
     }
 
     private static double DivideWithOverflowValidation(double a, double b)
