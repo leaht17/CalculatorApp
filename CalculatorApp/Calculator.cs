@@ -178,22 +178,23 @@ public class Calculator
     private static double ExecuteWithOverflowValidation(
         double a,
         double b,
-        Func<int, int, int> intOperation,
+        Func<int, int, int>? intOperation,
         Func<double, double, double> floatingOperation,
         string operationName,
-        bool returnFloatingResultOnIntOperands = false)
+        Action<int, int>? intValidationOperation = null)
     {
         if (TryGetIntOperands(a, b, out int left, out int right))
         {
             try
             {
-                if (returnFloatingResultOnIntOperands)
+                if (intValidationOperation is not null)
                 {
-                    intOperation(left, right);
+                    intValidationOperation(left, right);
                     return floatingOperation(a, b);
                 }
 
-                return intOperation(left, right);
+                if (intOperation is not null)
+                    return intOperation(left, right);
             }
             catch (OverflowException ex)
             {
@@ -209,10 +210,10 @@ public class Calculator
         return ExecuteWithOverflowValidation(
             a,
             b,
-            (left, right) => left == int.MinValue && right == -1 ? throw new OverflowException() : 0,
+            intOperation: null,
             (left, right) => left / right,
             "division",
-            returnFloatingResultOnIntOperands: true);
+            intValidationOperation: (left, right) => _ = checked(left / right));
     }
 
     private static bool TryGetIntOperands(double a, double b, out int left, out int right)
