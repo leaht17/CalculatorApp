@@ -2,13 +2,14 @@ using System.Text.RegularExpressions;
 
 public class Calculator
 {
-    private const double IntegerTolerance = 1e-9;
+    private const double IntegerComparisonTolerance = 1e-9;
 
     public double Evaluate(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
+        // Normalize by removing whitespace so unsupported characters can be detected reliably.
         string normalizedInput = Regex.Replace(input, @"\s+", string.Empty);
 
         // Split input into numbers, operators, and parentheses
@@ -225,7 +226,7 @@ public class Calculator
 
         if (!IsIntegerValue(a) || !IsIntegerValue(b))
             return false;
-        if (a < int.MinValue || a > int.MaxValue || b < int.MinValue || b > int.MaxValue)
+        if (!IsInInt32Range(a) || !IsInInt32Range(b))
             return false;
 
         left = (int)a;
@@ -235,7 +236,12 @@ public class Calculator
 
     private static bool IsIntegerValue(double value)
     {
-        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < IntegerTolerance;
+        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < IntegerComparisonTolerance;
+    }
+
+    private static bool IsInInt32Range(double value)
+    {
+        return value >= int.MinValue && value <= int.MaxValue;
     }
 
     private static double ValidateAndCalculatePower(double a, double b)
