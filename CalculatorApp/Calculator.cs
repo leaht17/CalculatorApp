@@ -180,17 +180,19 @@ public class Calculator
         double b,
         Func<int, int, int> intOperation,
         Func<double, double, double> floatingOperation,
-        string operationName)
+        string operationName,
+        bool returnFloatingResultOnIntOperands = false)
     {
         if (TryGetIntOperands(a, b, out int left, out int right))
         {
             try
             {
-                return intOperation(left, right);
+                int intResult = intOperation(left, right);
+                return returnFloatingResultOnIntOperands ? floatingOperation(a, b) : intResult;
             }
-            catch (OverflowException)
+            catch (OverflowException ex)
             {
-                throw new OverflowException($"Integer overflow: {operationName} result exceeds Int32 range.");
+                throw new OverflowException($"Integer overflow: {operationName} result exceeds Int32 range.", ex);
             }
         }
 
@@ -199,10 +201,7 @@ public class Calculator
 
     private static double DivideWithOverflowValidation(double a, double b)
     {
-        if (TryGetIntOperands(a, b, out int left, out int right) && left == int.MinValue && right == -1)
-            throw new OverflowException("Integer overflow: division result exceeds Int32 range.");
-
-        return a / b;
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left / right), (left, right) => left / right, "division", returnFloatingResultOnIntOperands: true);
     }
 
     private static bool TryGetIntOperands(double a, double b, out int left, out int right)
