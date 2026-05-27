@@ -33,7 +33,15 @@ public class CalculatorTests
 
     [Fact]
     public void Division_ByZero_Throws() =>
-        Assert.Throws<ArgumentException>(() => _calc.Evaluate("5/0"));
+        Assert.Throws<DivideByZeroException>(() => _calc.Evaluate("5/0"));
+
+    [Fact]
+    public void NonNumericInput_Throws() =>
+        Assert.Throws<ArgumentException>(() => _calc.Evaluate("2+a"));
+
+    [Fact]
+    public void IntegerOverflow_Throws() =>
+        Assert.Throws<OverflowException>(() => _calc.Evaluate("2147483647+1"));
 
     // Modulo
     [Theory]

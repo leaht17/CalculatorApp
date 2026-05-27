@@ -2,15 +2,24 @@ using System.Text.RegularExpressions;
 
 public class Calculator
 {
+    private const double IntegerComparisonTolerance = 1e-9;
+
     public double Evaluate(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
             throw new ArgumentException("No input provided.");
 
+        // Normalize by removing whitespace so unsupported characters can be detected reliably.
+        string normalizedInput = Regex.Replace(input, @"\s+", string.Empty);
+
         // Split input into numbers, operators, and parentheses
-        var tokens = Regex.Matches(input, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
+        var tokens = Regex.Matches(normalizedInput, @"(\d+(\.\d*)?|\.\d+)|[+\-*/^()]");
         if (tokens.Count == 0)
             throw new ArgumentException("Syntax error: invalid expression.");
+
+        string matchedTokens = string.Concat(tokens.Select(t => t.Value));
+        if (!string.Equals(matchedTokens, normalizedInput, StringComparison.Ordinal))
+            throw new ArgumentException("Invalid input: expression contains non-numeric or unsupported tokens.");
 
         // Shunting Yard Algorithm for order of operations and parentheses
         var output = new Stack<double>();
@@ -139,16 +148,101 @@ public class Calculator
 
         double result = op switch
         {
-            "+" => a + b,
-            "-" => a - b,
-            "*" => a * b,
-            "/" when b == 0 => throw new ArgumentException("Invalid operation: division by zero is not allowed."),
-            "/" => a / b,
+            "+" => AddWithOverflowValidation(a, b),
+            "-" => SubtractWithOverflowValidation(a, b),
+            "*" => MultiplyWithOverflowValidation(a, b),
+            "/" when b == 0 => throw new DivideByZeroException("Invalid operation: division by zero is not allowed."),
+            "/" => DivideWithOverflowValidation(a, b),
             "^" => ValidateAndCalculatePower(a, b),
             _ => throw new ArgumentException($"Invalid operation: unknown operator: {op}")
         };
         
         output.Push(result);
+    }
+
+    private static double AddWithOverflowValidation(double a, double b)
+    {
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left + right), (left, right) => left + right, "addition");
+    }
+
+    private static double SubtractWithOverflowValidation(double a, double b)
+    {
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left - right), (left, right) => left - right, "subtraction");
+    }
+
+    private static double MultiplyWithOverflowValidation(double a, double b)
+    {
+        return ExecuteWithOverflowValidation(a, b, (left, right) => checked(left * right), (left, right) => left * right, "multiplication");
+    }
+
+    private static double ExecuteWithOverflowValidation(
+        double a,
+        double b,
+        Func<int, int, int>? intOperation,
+        Func<double, double, double> floatingOperation,
+        string operationName,
+        Action<int, int>? intValidationOperation = null)
+    {
+        if (TryGetIntOperands(a, b, out int left, out int right))
+        {
+            try
+            {
+                if (intValidationOperation is not null)
+                {
+                    intValidationOperation(left, right);
+                    return floatingOperation(a, b);
+                }
+
+                if (intOperation is not null)
+                    return intOperation(left, right);
+            }
+            catch (OverflowException ex)
+            {
+                throw new OverflowException($"Integer overflow: {operationName} result exceeds Int32 range.", ex);
+            }
+        }
+
+        return floatingOperation(a, b);
+    }
+
+    private static double DivideWithOverflowValidation(double a, double b)
+    {
+        return ExecuteWithOverflowValidation(
+            a,
+            b,
+            intOperation: null,
+            (left, right) => left / right,
+            "division",
+            intValidationOperation: (left, right) =>
+            {
+                if (right != 0)
+                    _ = checked(left / right);
+            });
+    }
+
+    private static bool TryGetIntOperands(double a, double b, out int left, out int right)
+    {
+        left = 0;
+        right = 0;
+
+        if (!IsIntegerValue(a) || !IsIntegerValue(b))
+            return false;
+        if (!IsInInt32Range(a) || !IsInInt32Range(b))
+            return false;
+
+        left = (int)a;
+        right = (int)b;
+        return true;
+    }
+
+    private static bool IsIntegerValue(double value)
+    {
+        return double.IsFinite(value) && Math.Abs(value - Math.Truncate(value)) < IntegerComparisonTolerance;
+    }
+
+    private static bool IsInInt32Range(double value)
+    {
+        return value >= int.MinValue && value <= int.MaxValue;
     }
 
     private static double ValidateAndCalculatePower(double a, double b)
