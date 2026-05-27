@@ -213,7 +213,11 @@ public class Calculator
             intOperation: null,
             (left, right) => left / right,
             "division",
-            intValidationOperation: (left, right) => _ = checked(left / right));
+            intValidationOperation: (left, right) =>
+            {
+                if (right != 0)
+                    _ = checked(left / right);
+            });
     }
 
     private static bool TryGetIntOperands(double a, double b, out int left, out int right)
